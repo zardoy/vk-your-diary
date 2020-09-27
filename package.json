@@ -2,6 +2,7 @@
     "name": "vk-your-diary",
     "version": "0.1.0",
     "private": true,
+    "homepage": "./",
     "dependencies": {
         "@apollo/client": "^3.2.1",
         "@ionic/react": "^5.3.4",
