@@ -1,5 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonInput, IonAlert, IonButton, IonListHeader, IonRadio, IonRadioGroup, IonToggle, IonText, IonTextarea, IonLoading } from "@ionic/react";
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonInput, IonAlert, IonButton, IonListHeader, IonRadio, IonRadioGroup, IonToggle, IonTextarea, IonLoading } from "@ionic/react";
 import { useFormik } from "formik";
 import React, { useState } from "react";
 import { CreateGroupVariables, CreateGroup as CreateGroupMutation } from "./__generated__/CreateGroup";
