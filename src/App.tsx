@@ -11,8 +11,11 @@ import SelectGroup from './pages/SelectGroup';
 import GroupTabs from './GroupTabs';
 import URLS from './URLS';
 import CreateGroup from './pages/CreateGroup';
+import { useVKBridge } from './lib/vk-bridge-react-bindings';
 
 const App: React.FC = () => {
+    useVKBridge({ darkSchemeBodyClass: "dark" });
+
     // todo
     useEffect(() => {
         const onSubmitListener = (e: Event) => {
