@@ -18,5 +18,5 @@ import '@ionic/react/css/display.css';
 
 // USER STYLES
 
-import "./styles/index.scss";
-import "./styles/theming.scss";
+import "./index.scss";
+import "./theming.scss";
