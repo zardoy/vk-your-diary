@@ -1783,6 +1783,11 @@
     semver "^7.3.2"
     tsutils "^3.17.1"
 
+"@vkontakte/vk-bridge@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@vkontakte/vk-bridge/-/vk-bridge-2.3.0.tgz#d436daeab23bf51a4485a3a45493f793dab78187"
+  integrity sha512-1kICD4u5J8EO4PyGg7ZMBwOju85Wh7zb5OxVs1JYB/ghTHg5YQSmpIx9M4NZH2TnK9KelUpBEs+TwFpkB5PMyw==
+
 "@webassemblyjs/ast@1.8.5":
   version "1.8.5"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.8.5.tgz#51b1c5fe6576a34953bf4b253df9f0d490d9e359"
