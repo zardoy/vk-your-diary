@@ -1958,6 +1958,11 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
+"@zardoy/vk-params@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@zardoy/vk-params/-/vk-params-0.1.0.tgz#2bd705d4aed5339f9915f9c5da70efdbef96dd7e"
+  integrity sha512-thsAtJOlEjPKmYN709Vp2u3kbfbCziAtS1LSFRAMUnNGETdvrkNJ75nynYnKMbUmoj3ghoRg6wV8595f1Wg4DA==
+
 abab@^2.0.0:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.5.tgz#c0b678fb32d60fc1219c784d6a826fe385aeb79a"
