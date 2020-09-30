@@ -51,7 +51,7 @@ const getInviteToken = (tokenOrLink: string): string | null => {
     }
 };
 
-let JoinGroup: React.FC<Props> = () => {
+let JoinGroupComponent: React.FC<Props> = () => {
     const { setDialog } = useAppDialogContext();
 
     const [joinGroupMutate] = useMutation<JoinGroup, JoinGroupVariables>(JOIN_GROUP_MUTATION, {
@@ -95,7 +95,7 @@ let JoinGroup: React.FC<Props> = () => {
                 message: "Не удалось отсканировать QR"
             });
         }
-    }, []);
+    }, [joinGroupMutate, setDialog]);
 
     return <IonPage>
         <IonHeader>
@@ -141,4 +141,4 @@ let JoinGroup: React.FC<Props> = () => {
     </IonPage>;
 };
 
-export default JoinGroup;
+export default JoinGroupComponent;
