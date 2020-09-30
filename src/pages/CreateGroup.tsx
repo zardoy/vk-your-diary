@@ -1,5 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonInput, IonButton, IonListHeader, IonRadio, IonRadioGroup, IonToggle, IonTextarea, IonLoading } from "@ionic/react";
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonInput, IonButton, IonListHeader, IonRadio, IonRadioGroup, IonToggle, IonTextarea, IonLoading, useIonRouter } from "@ionic/react";
 import { useFormik } from "formik";
 import React from "react";
 import { CreateGroupVariables, CreateGroup as CreateGroupMutation } from "./__generated__/CreateGroup";
@@ -16,23 +16,16 @@ const CREATE_GROUP_MUTATION = gql`
 // todo formik
 
 let CreateGroup: React.FC<Props> = () => {
-    // const [fetchJoinedGroups, { loading: }]
+    const router = useIonRouter();
 
     const [mutateCreateGroup, { loading: creatingGroup }] = useMutation<CreateGroupMutation, CreateGroupVariables>(CREATE_GROUP_MUTATION, {
-        update(cache, { data }) {
+        async update(cache, { data }) {
             if (!data) return;
-            // update joinedGroups data
-            // data.createGroup
-            // cache.modify({
-            //     fields: {
-            //         group: {
-            //             inviteToken: 
-            //         }
-            //     }
-            // })
+            // todo update cache
+            await cache.reset();
         },
         onCompleted(data) {
-            alert("отстань.");
+            router.back();
         }
     });
 
@@ -112,9 +105,10 @@ let CreateGroup: React.FC<Props> = () => {
                     disabled={Object.keys(formik.errors).length !== 0}
                     type="submit"
                 >Создать группу</IonButton>
-                <p>
+                {/* <p>
+                    // todo
                     Всё это можно будет изменить в настройках группы.
-                </p>
+                </p> */}
             </form>
         </IonContent>
     </IonPage>;
