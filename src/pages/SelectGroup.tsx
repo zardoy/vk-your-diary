@@ -1,44 +1,83 @@
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonList, IonItemOption, IonItemOptions, IonItemSliding, IonAvatar, IonNote, IonIcon, IonButton, IonActionSheet, useIonRouter } from "@ionic/react";
-import React, { useCallback, useState } from "react";
-import { gql, useQuery } from "@apollo/client";
+import {
+    IonPage,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonItemOption,
+    IonItemOptions,
+    IonItemSliding,
+    IonAvatar,
+    IonNote,
+    IonIcon,
+    IonButton,
+    IonActionSheet,
+    useIonRouter, IonRefresher, IonRefresherContent
+} from "@ionic/react";
+import { RefresherEventDetail } from "@ionic/core";
+import React, { useCallback, useRef, useState } from "react";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { JoinedGroups } from "./__generated__/JoinedGroups";
 import { add, people, addCircle, enter } from "ionicons/icons";
 import URLS from "../URLS";
+import { LeaveGroup, LeaveGroupVariables } from "./__generated__/LeaveGroup";
 
 // todo
 const GROUP_LIMIT = 20;
 
 const JOINED_GROUP_QUERY = gql`
-query JoinedGroups {
-    joinedGroups {
-        id
-        name
-        membersCount
-        ownerId
-        ownerSmallAvatar
-    }
+    query GetJoinedGroups {
+        joinedGroups {
+            id
+            name
+            membersCount
+            ownerId
+            ownerSmallAvatar
+        }
 }
+`;
+const LEAVE_GROUP_MUTATION = gql`
+    mutation LeaveGroup($groupId: Int!) {
+        leaveGroup(groupId: $groupId) 
+    }
 `;
 
 interface Props {
 }
 
 let SelectGroup: React.FC<Props> = () => {
+    const router = useIonRouter();
+
     // STATE
     const [openAddGroupMenu, setOpenAddGroupMenu] = useState(false);
+    /* PTR - Pull To Refresh */
+    const PTRCompleteCallback = useRef(null as null | (() => void));
 
     const { data, refetch: refetchGroups } = useQuery<JoinedGroups>(JOINED_GROUP_QUERY, {
         notifyOnNetworkStatusChange: true,
+        onCompleted() {
+            PTRCompleteCallback.current && PTRCompleteCallback.current();
+            PTRCompleteCallback.current = null;
+        },
         context: {
             loaderText: "Загрузка групп..."
         }
     });
 
-    const { push: pushRoute } = useIonRouter();
 
     const openGroup = useCallback((groupId: number) => {
 
     }, []);
+
+    const refreshGroupsForPtr = useCallback((event: CustomEvent<RefresherEventDetail>) => {
+        PTRCompleteCallback.current = event.detail.complete;
+        refetchGroups();
+    }, []);
+
+    const [leaveGroupMutate] = useMutation<LeaveGroup, LeaveGroupVariables>(LEAVE_GROUP_MUTATION);
 
     return <IonPage>
         <IonHeader>
@@ -47,6 +86,9 @@ let SelectGroup: React.FC<Props> = () => {
             </IonToolbar>
         </IonHeader>
         <IonContent fullscreen>
+            <IonRefresher slot="fixed" onIonRefresh={refreshGroupsForPtr}>
+                <IonRefresherContent />
+            </IonRefresher>
             <IonHeader collapse="condense">
                 <IonToolbar>
                     <IonTitle size="large">Группы</IonTitle>
@@ -61,14 +103,14 @@ let SelectGroup: React.FC<Props> = () => {
                         text: "Присоединится",
                         icon: enter,
                         handler() {
-                            pushRoute(URLS.JOIN_GROUP);
+                            router.push(URLS.JOIN_GROUP);
                         }
                     },
                     {
                         text: "Создать свою",
                         icon: add,
                         handler() {
-                            pushRoute(URLS.CREATE_GROUP);
+                            router.push(URLS.CREATE_GROUP);
                         }
                     },
                     {
@@ -93,10 +135,18 @@ let SelectGroup: React.FC<Props> = () => {
                                                 </IonAvatar>
                                             }
                                             <IonLabel>{groupName}</IonLabel>
-                                            <IonNote slot="end"><IonIcon icon={people} /> {membersCount}</IonNote>
+                                            <IonNote slot="end">
+                                                <IonIcon icon={people} /> {membersCount}
+                                            </IonNote>
                                         </IonItem>
+
                                         <IonItemOptions side="end">
-                                            <IonItemOption color="danger" onClick={() => { }}>Покинуть</IonItemOption>
+                                            <IonItemOption
+                                                color="danger"
+                                                onClick={() => leaveGroupMutate({ variables: { groupId } })}
+                                            >
+                                                Покинуть
+                                            </IonItemOption>
                                         </IonItemOptions>
                                     </IonItemSliding>
                                 );
@@ -111,7 +161,6 @@ let SelectGroup: React.FC<Props> = () => {
                         }
                     </IonList>
             }
-
         </IonContent>
     </IonPage>;
 };
