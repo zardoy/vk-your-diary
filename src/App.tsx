@@ -17,17 +17,6 @@ import MyApolloProvider from './apollo/MyApolloProvider';
 const App: React.FC = () => {
     useVKBridge({ darkSchemeBodyClass: "dark" });
 
-    // todo
-    useEffect(() => {
-        const onSubmitListener = (e: Event) => {
-            e.preventDefault();
-        };
-        window.addEventListener("submit", onSubmitListener);
-        return () => {
-            window.removeEventListener("submit", onSubmitListener);
-        };
-    }, []);
-
     return <IonApp>
         <IonReactHashRouter>
             <IonPage>
