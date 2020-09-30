@@ -1,7 +1,7 @@
 import { HttpLink, ApolloLink, ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
-import { IonAlert } from "@ionic/react";
+import { IonAlert, IonLoading } from "@ionic/react";
 import React, { useContext, useMemo, useState } from "react";
 import { operationErrorTitle } from "./errorMessages";
 
@@ -30,6 +30,7 @@ interface Props {
 }
 
 let MyApolloProvider: React.FC<Props> = ({ children }) => {
+    const [loaderText, setLoaderText] = useState(null as null | string);
     const [dialog, setDialog] = useState(null as DialogType);
 
     const apolloClient = useMemo(() => {
@@ -48,11 +49,14 @@ let MyApolloProvider: React.FC<Props> = ({ children }) => {
             });
         });
 
-        const testLink = new ApolloLink((operation, forward) => {
-            console.dir(operation);
-            const observer = forward(operation);
-            // console.log("COUNT", observer.);
-            return observer;
+        const loaderLink = new ApolloLink((operation, forward) => {
+            const operationContext = operation.getContext();
+            const observable = forward(operation);
+            setLoaderText(operationContext.loaderText || "");
+            observable.subscribe({
+                complete: () => setLoaderText(null)
+            });
+            return observable;
         });
 
         const authLink = setContext((_, { headers }) => {
@@ -66,7 +70,7 @@ let MyApolloProvider: React.FC<Props> = ({ children }) => {
 
         const apolloClient = new ApolloClient({
             link: authLink
-                .concat(testLink)
+                .concat(loaderLink)
                 .concat(errorLink)
                 .concat(httpLink),
             cache: new InMemoryCache()
@@ -77,10 +81,19 @@ let MyApolloProvider: React.FC<Props> = ({ children }) => {
 
     return <>
         {
+            loaderText &&
+            <IonLoading
+                isOpen={true}
+                translucent
+                message={loaderText}
+            />
+        }
+        {
             dialog &&
             (dialog.type === "message" ?
                 <IonAlert
                     isOpen={true}
+                    translucent
                     backdropDismiss={false}
                     header={dialog.title || process.env.REACT_APP_NAME}
                     message={dialog.message}
@@ -93,6 +106,7 @@ let MyApolloProvider: React.FC<Props> = ({ children }) => {
                 : dialog.type === "destruction" ?
                     <IonAlert
                         isOpen={true}
+                        translucent
                         backdropDismiss={false}
                         header={dialog.title}
                         message={dialog.message}

@@ -1,4 +1,4 @@
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonList, IonItemOption, IonItemOptions, IonItemSliding, IonAvatar, IonNote, IonIcon, IonLoading, IonButton, IonActionSheet, useIonRouter } from "@ionic/react";
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonList, IonItemOption, IonItemOptions, IonItemSliding, IonAvatar, IonNote, IonIcon, IonButton, IonActionSheet, useIonRouter } from "@ionic/react";
 import React, { useCallback, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { JoinedGroups } from "./__generated__/JoinedGroups";
@@ -27,8 +27,11 @@ let SelectGroup: React.FC<Props> = () => {
     // STATE
     const [openAddGroupMenu, setOpenAddGroupMenu] = useState(false);
 
-    const { loading, data, refetch: refetchGroups } = useQuery<JoinedGroups>(JOINED_GROUP_QUERY, {
-        notifyOnNetworkStatusChange: true
+    const { data, refetch: refetchGroups } = useQuery<JoinedGroups>(JOINED_GROUP_QUERY, {
+        notifyOnNetworkStatusChange: true,
+        context: {
+            loaderText: "Загрузка групп..."
+        }
     });
 
     const { push: pushRoute } = useIonRouter();
@@ -75,43 +78,38 @@ let SelectGroup: React.FC<Props> = () => {
                 ]}
             />
             {
-                loading ? <IonLoading
-                    isOpen={true}
-                    translucent
-                    message={'Загрузка групп...'}
-                /> :
-                    !data ? <>
-                        <IonButton expand="block" onClick={() => refetchGroups()}>Перезагрузить</IonButton>
-                    </> :
-                        <IonList lines="full">
-                            {
-                                data.joinedGroups.map(({ id: groupId, membersCount, name: groupName, ownerSmallAvatar }) => {
-                                    return (
-                                        <IonItemSliding key={groupId}>
-                                            <IonItem button onClick={() => openGroup(groupId)}>
-                                                {ownerSmallAvatar &&
-                                                    <IonAvatar slot="start">
-                                                        <img alt="Group owner's avatar" src={ownerSmallAvatar} />
-                                                    </IonAvatar>
-                                                }
-                                                <IonLabel>{groupName}</IonLabel>
-                                                <IonNote slot="end"><IonIcon icon={people} /> {membersCount}</IonNote>
-                                            </IonItem>
-                                            <IonItemOptions side="end">
-                                                <IonItemOption color="danger" onClick={() => { }}>Покинуть</IonItemOption>
-                                            </IonItemOptions>
-                                        </IonItemSliding>
-                                    );
-                                })
-                            }
-                            {
-                                data.joinedGroups.length < GROUP_LIMIT &&
-                                <IonItem button onClick={() => setOpenAddGroupMenu(true)}>
-                                    <IonIcon slot="start" icon={addCircle} style={{ color: "lime" }} />
-                                    <IonLabel>Добавить группу</IonLabel>
-                                </IonItem>
-                            }
-                        </IonList>
+                !data ? <>
+                    <IonButton expand="block" onClick={() => refetchGroups()}>Перезагрузить</IonButton>
+                </> :
+                    <IonList lines="full">
+                        {
+                            data.joinedGroups.map(({ id: groupId, membersCount, name: groupName, ownerSmallAvatar }) => {
+                                return (
+                                    <IonItemSliding key={groupId}>
+                                        <IonItem button onClick={() => openGroup(groupId)}>
+                                            {ownerSmallAvatar &&
+                                                <IonAvatar slot="start">
+                                                    <img alt="Group owner's avatar" src={ownerSmallAvatar} />
+                                                </IonAvatar>
+                                            }
+                                            <IonLabel>{groupName}</IonLabel>
+                                            <IonNote slot="end"><IonIcon icon={people} /> {membersCount}</IonNote>
+                                        </IonItem>
+                                        <IonItemOptions side="end">
+                                            <IonItemOption color="danger" onClick={() => { }}>Покинуть</IonItemOption>
+                                        </IonItemOptions>
+                                    </IonItemSliding>
+                                );
+                            })
+                        }
+                        {
+                            data.joinedGroups.length < GROUP_LIMIT &&
+                            <IonItem button onClick={() => setOpenAddGroupMenu(true)}>
+                                <IonIcon slot="start" icon={addCircle} style={{ color: "lime" }} />
+                                <IonLabel>Добавить группу</IonLabel>
+                            </IonItem>
+                        }
+                    </IonList>
             }
 
         </IonContent>

@@ -1,5 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonInput, IonButton, IonListHeader, IonRadio, IonRadioGroup, IonToggle, IonTextarea, IonLoading, useIonRouter } from "@ionic/react";
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonInput, IonButton, IonListHeader, IonRadio, IonRadioGroup, IonToggle, IonTextarea, useIonRouter } from "@ionic/react";
 import { useFormik } from "formik";
 import React from "react";
 import { CreateGroupVariables, CreateGroup as CreateGroupMutation } from "./__generated__/CreateGroup";
@@ -18,14 +18,17 @@ const CREATE_GROUP_MUTATION = gql`
 let CreateGroup: React.FC<Props> = () => {
     const router = useIonRouter();
 
-    const [mutateCreateGroup, { loading: creatingGroup }] = useMutation<CreateGroupMutation, CreateGroupVariables>(CREATE_GROUP_MUTATION, {
+    const [mutateCreateGroup] = useMutation<CreateGroupMutation, CreateGroupVariables>(CREATE_GROUP_MUTATION, {
         async update(cache, { data }) {
             if (!data) return;
             // todo update cache
             await cache.reset();
         },
-        onCompleted(data) {
+        onCompleted() {
             router.back();
+        },
+        context: {
+            loaderText: "Создание группы..."
         }
     });
 
@@ -56,11 +59,6 @@ let CreateGroup: React.FC<Props> = () => {
                     <IonTitle size="large">Создать группу</IonTitle>
                 </IonToolbar>
             </IonHeader>
-            {creatingGroup && <IonLoading
-                isOpen={true}
-                translucent
-                message={'Создание группы...'}
-            />}
             <form onSubmit={formik.submitForm}>
                 <IonList lines="full">
                     <IonItem>
