@@ -29,14 +29,20 @@
         "@types/react-dom": "^16.9.0",
         "@types/react-router": "^5.1.8",
         "@types/react-router-dom": "^5.1.5",
-        "apollo": "^2.31.0"
+        "apollo": "^2.31.0",
+        "concurrently": "^5.3.0",
+        "cross-env": "^7.0.2",
+        "gulp": "^4.0.2",
+        "open": "^7.3.0",
+        "wait-on": "^5.2.0"
     },
     "scripts": {
-        "start": "react-scripts start",
+        "start": "concurrently \"cross-env PORT=10888 BROWSER=none react-scripts start \" \"wait-on http://localhost:10888 && gulp start:vk-app --silent \" --kill-others-on-fail",
         "build": "react-scripts build",
         "test": "react-scripts test",
         "graphql-codegen": "yarn apollo client:codegen --target=\"typescript\""
     },
+    "vk_com_app_id": "7139517",
     "eslintConfig": {
         "extends": "react-app"
     },
