@@ -4,13 +4,13 @@ const FETCH = "получить";
 const MESSAGES: Record<"query" | "mutate", Record<"add" | "full", Record<string, string>>> = {
     query: {
         add: {
-            JoinedGroups: "список групп"
+            GetJoinedGroups: "список групп"
         },
         full: {}
     },
     mutate: {
         add: {
-            createGroup: "создать новую группу",
+            CreateGroup: "создать новую группу",
             joinGroup: "присоединится к группе"
         },
         full: {}

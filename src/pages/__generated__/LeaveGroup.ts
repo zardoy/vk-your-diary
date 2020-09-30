@@ -4,13 +4,13 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: JoinGroup
+// GraphQL mutation operation: LeaveGroup
 // ====================================================
 
-export interface JoinGroup {
-  joinGroup: boolean;
+export interface LeaveGroup {
+  leaveGroup: boolean;
 }
 
-export interface JoinGroupVariables {
-  inviteToken: string;
+export interface LeaveGroupVariables {
+  groupId: number;
 }

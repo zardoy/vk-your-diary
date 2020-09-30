@@ -4,10 +4,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: JoinedGroups
+// GraphQL query operation: GetJoinedGroups
 // ====================================================
 
-export interface JoinedGroups_joinedGroups {
+export interface GetJoinedGroups_joinedGroups {
   __typename: "JoinedGroup";
   id: number;
   name: string;
@@ -16,6 +16,6 @@ export interface JoinedGroups_joinedGroups {
   ownerSmallAvatar: string | null;
 }
 
-export interface JoinedGroups {
-  joinedGroups: JoinedGroups_joinedGroups[];
+export interface GetJoinedGroups {
+  joinedGroups: GetJoinedGroups_joinedGroups[];
 }
