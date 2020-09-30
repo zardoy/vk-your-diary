@@ -4,6 +4,7 @@ import {
     IonApp,
     IonPage,
     IonRouterOutlet,
+    setupConfig,
 } from '@ionic/react';
 import { IonReactHashRouter } from '@ionic/react-router';
 
@@ -13,6 +14,10 @@ import URLS from './URLS';
 import CreateGroup from './pages/CreateGroup';
 import { useVKBridge } from './lib/vk-bridge-react-bindings';
 import MyApolloProvider from './apollo/MyApolloProvider';
+
+setupConfig({
+    // backButtonText: ""
+});
 
 const App: React.FC = () => {
     useVKBridge({ darkSchemeBodyClass: "dark" });
