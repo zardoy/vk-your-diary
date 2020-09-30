@@ -1,28 +1,32 @@
+import { add, addCircle, enter, people } from "ionicons/icons";
+import React, { useCallback, useRef, useState } from "react";
+
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { RefresherEventDetail } from "@ionic/core";
 import {
-    IonPage,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
+    IonActionSheet,
+    IonAvatar,
+    IonButton,
     IonContent,
+    IonHeader,
+    IonIcon,
     IonItem,
-    IonLabel,
-    IonList,
     IonItemOption,
     IonItemOptions,
     IonItemSliding,
-    IonAvatar,
+    IonLabel,
+    IonList,
     IonNote,
-    IonIcon,
-    IonButton,
-    IonActionSheet,
-    useIonRouter, IonRefresher, IonRefresherContent
+    IonPage,
+    IonRefresher,
+    IonRefresherContent,
+    IonTitle,
+    IonToolbar,
+    useIonRouter
 } from "@ionic/react";
-import { RefresherEventDetail } from "@ionic/core";
-import React, { useCallback, useRef, useState } from "react";
-import { gql, useMutation, useQuery } from "@apollo/client";
-import { JoinedGroups } from "./__generated__/JoinedGroups";
-import { add, people, addCircle, enter } from "ionicons/icons";
+
 import URLS from "../URLS";
+import { JoinedGroups } from "./__generated__/JoinedGroups";
 import { LeaveGroup, LeaveGroupVariables } from "./__generated__/LeaveGroup";
 
 // todo

@@ -1,19 +1,15 @@
-import React from 'react';
-import { Redirect, Route } from 'react-router-dom';
-import {
-    IonApp,
-    IonPage,
-    IonRouterOutlet,
-    setupConfig,
-} from '@ionic/react';
-import { IonReactHashRouter } from '@ionic/react-router';
+import React from "react";
+import { Redirect, Route } from "react-router-dom";
 
-import SelectGroup from './pages/SelectGroup';
-import GroupTabs from './GroupTabs';
-import URLS from './URLS';
-import CreateGroup from './pages/CreateGroup';
-import { useVKBridge } from './lib/vk-bridge-react-bindings';
-import MyApolloProvider from './apollo/MyApolloProvider';
+import { IonApp, IonPage, IonRouterOutlet, setupConfig } from "@ionic/react";
+import { IonReactHashRouter } from "@ionic/react-router";
+
+import MyApolloProvider from "./apollo/MyApolloProvider";
+import GroupTabs from "./GroupTabs";
+import { useVKBridge } from "./lib/vk-bridge-react-bindings";
+import CreateGroup from "./pages/CreateGroup";
+import SelectGroup from "./pages/SelectGroup";
+import URLS from "./URLS";
 
 setupConfig({
     // backButtonText: ""

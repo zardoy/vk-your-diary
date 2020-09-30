@@ -1,5 +1,6 @@
-import vkBridge, { AppearanceSchemeType, VKBridgeSubscribeHandler } from "@vkontakte/vk-bridge";
 import { useEffect } from "react";
+
+import vkBridge, { AppearanceSchemeType, VKBridgeSubscribeHandler } from "@vkontakte/vk-bridge";
 
 interface HookParams {
     darkSchemeBodyClass: string | null | undefined;

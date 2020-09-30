@@ -1,5 +1,6 @@
-import { IonContent, IonFab, IonHeader, IonPage, IonSpinner, IonTitle, IonToolbar } from "@ionic/react";
 import React from "react";
+
+import { IonContent, IonFab, IonHeader, IonPage, IonSpinner, IonTitle, IonToolbar } from "@ionic/react";
 
 let AppLoading: React.FC = () => {
 
@@ -14,7 +15,7 @@ let AppLoading: React.FC = () => {
                 <IonSpinner />
             </IonFab>
         </IonContent>
-    </IonPage>
-}
+    </IonPage>;
+};
 
 export default AppLoading;

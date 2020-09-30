@@ -1,8 +1,29 @@
-import { gql, useMutation } from "@apollo/client";
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonInput, IonButton, IonListHeader, IonRadio, IonRadioGroup, IonToggle, IonTextarea, useIonRouter, IonButtons, IonBackButton } from "@ionic/react";
 import { useFormik } from "formik";
 import React from "react";
-import { CreateGroupVariables, CreateGroup as CreateGroupMutation } from "./__generated__/CreateGroup";
+
+import { gql, useMutation } from "@apollo/client";
+import {
+    IonBackButton,
+    IonButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonInput,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonPage,
+    IonRadio,
+    IonRadioGroup,
+    IonTextarea,
+    IonTitle,
+    IonToggle,
+    IonToolbar,
+    useIonRouter
+} from "@ionic/react";
+
+import { CreateGroup as CreateGroupMutation, CreateGroupVariables } from "./__generated__/CreateGroup";
 
 interface Props {
 }

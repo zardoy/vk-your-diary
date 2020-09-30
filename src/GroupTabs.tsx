@@ -1,7 +1,9 @@
-import { IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonIcon, IonLabel } from "@ionic/react";
-import { triangle, ellipse } from "ionicons/icons";
+import { ellipse, triangle } from "ionicons/icons";
 import React from "react";
 import { Route } from "react-router";
+
+import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from "@ionic/react";
+
 import DiaryTab from "./pages/DiaryTab";
 import GroupTab from "./pages/GroupTab";
 

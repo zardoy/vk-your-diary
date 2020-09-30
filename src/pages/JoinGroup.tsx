@@ -1,11 +1,26 @@
-import React, { useCallback } from "react";
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonInput, IonRadioGroup, IonListHeader, IonRadio, IonToggle, IonTextarea, IonButton, IonBackButton, IonButtons } from "@ionic/react";
 import { useFormik } from "formik";
-import vkBridge from "@vkontakte/vk-bridge";
-import { useAppDialogContext } from "../apollo/MyApolloProvider";
+import React, { useCallback } from "react";
+
 import { gql, useMutation } from "@apollo/client";
-import { joinGroup, joinGroupVariables } from "./__generated__/joinGroup";
+import {
+    IonBackButton,
+    IonButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonInput,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonPage,
+    IonTitle,
+    IonToolbar
+} from "@ionic/react";
+import vkBridge from "@vkontakte/vk-bridge";
 import { vkGetParam } from "@zardoy/vk-params";
+
+import { useAppDialogContext } from "../apollo/MyApolloProvider";
+import { joinGroup, joinGroupVariables } from "./__generated__/joinGroup";
 
 interface Props {
 }
