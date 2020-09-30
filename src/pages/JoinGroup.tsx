@@ -20,7 +20,7 @@ import vkBridge from "@vkontakte/vk-bridge";
 import { vkGetParam } from "@zardoy/vk-params";
 
 import { useAppDialogContext } from "../apollo/MyApolloProvider";
-import { joinGroup, joinGroupVariables } from "./__generated__/joinGroup";
+import { JoinGroup, JoinGroupVariables } from "./__generated__/JoinGroup";
 
 interface Props {
 }
@@ -54,7 +54,7 @@ const getInviteToken = (tokenOrLink: string): string | null => {
 let JoinGroup: React.FC<Props> = () => {
     const { setDialog } = useAppDialogContext();
 
-    const [joinGroupMutate] = useMutation<joinGroup, joinGroupVariables>(JOIN_GROUP_MUTATION, {
+    const [joinGroupMutate] = useMutation<JoinGroup, JoinGroupVariables>(JOIN_GROUP_MUTATION, {
         context: { loaderText: "Поиск группы..." }
     });
 

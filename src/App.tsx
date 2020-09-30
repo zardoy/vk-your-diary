@@ -8,11 +8,12 @@ import MyApolloProvider from "./apollo/MyApolloProvider";
 import GroupTabs from "./GroupTabs";
 import { useVKBridge } from "./lib/vk-bridge-react-bindings";
 import CreateGroup from "./pages/CreateGroup";
+import JoinGroup from "./pages/JoinGroup";
 import SelectGroup from "./pages/SelectGroup";
 import URLS from "./URLS";
 
 setupConfig({
-    // backButtonText: ""
+    backButtonText: "назад"
 });
 
 const App: React.FC = () => {
@@ -27,7 +28,7 @@ const App: React.FC = () => {
                         <Route path="/" exact render={() => <Redirect to={URLS.JOINED_GROUPS} />} />
                         <Route path={URLS.JOINED_GROUPS} exact component={SelectGroup} />
                         <Route path={URLS.CREATE_GROUP} exact component={CreateGroup} />
-                        <Route path={URLS.JOIN_GROUP} exact component={SelectGroup} />
+                        <Route path={URLS.JOIN_GROUP} exact component={JoinGroup} />
                         <Route path="/group/" component={GroupTabs} />
                     </IonRouterOutlet>
                 </MyApolloProvider>

@@ -113,14 +113,17 @@ let MyApolloProvider: React.FC<Props> = ({ children }) => {
                         header={dialog.title}
                         message={dialog.message}
                         onDidDismiss={() => setDialog(null)}
-                        buttons={[{
-                            text: "Отмена",
-                            role: "cancel"
-                        }, {
-                            text: dialog.confirmText,
-                            role: "destructive",
-                            handler: dialog.confirmHandler
-                        }]}
+                        buttons={[
+                            {
+                                text: dialog.confirmText,
+                                role: "destructive",
+                                handler: dialog.confirmHandler
+                            },
+                            {
+                                text: "Отмена",
+                                role: "cancel"
+                            }
+                        ]}
                     /> : null)
         }
         <ApolloProvider client={apolloClient} >

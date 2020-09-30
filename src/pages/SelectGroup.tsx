@@ -25,8 +25,10 @@ import {
     useIonRouter
 } from "@ionic/react";
 
+import { useAppDialogContext } from "../apollo/MyApolloProvider";
+import { vkTapticEvent } from "../lib/vk-taptic-control";
 import URLS from "../URLS";
-import { JoinedGroups } from "./__generated__/JoinedGroups";
+import { GetJoinedGroups } from "./__generated__/GetJoinedGroups";
 import { LeaveGroup, LeaveGroupVariables } from "./__generated__/LeaveGroup";
 
 // todo
@@ -54,13 +56,15 @@ interface Props {
 
 let SelectGroup: React.FC<Props> = () => {
     const router = useIonRouter();
+    const { setDialog } = useAppDialogContext();
 
     // STATE
     const [openAddGroupMenu, setOpenAddGroupMenu] = useState(false);
+
     /* PTR - Pull To Refresh */
     const PTRCompleteCallback = useRef(null as null | (() => void));
 
-    const { data, refetch: refetchGroups } = useQuery<JoinedGroups>(JOINED_GROUP_QUERY, {
+    const { data, refetch: refetchGroups } = useQuery<GetJoinedGroups>(JOINED_GROUP_QUERY, {
         notifyOnNetworkStatusChange: true,
         onCompleted() {
             PTRCompleteCallback.current && PTRCompleteCallback.current();
@@ -78,10 +82,25 @@ let SelectGroup: React.FC<Props> = () => {
 
     const refreshGroupsForPtr = useCallback((event: CustomEvent<RefresherEventDetail>) => {
         PTRCompleteCallback.current = event.detail.complete;
+        vkTapticEvent.ptrPull();
         refetchGroups();
-    }, []);
+    }, [refetchGroups]);
 
-    const [leaveGroupMutate] = useMutation<LeaveGroup, LeaveGroupVariables>(LEAVE_GROUP_MUTATION);
+    const [leaveGroupMutate] = useMutation<LeaveGroup, LeaveGroupVariables>(LEAVE_GROUP_MUTATION, {
+        update: (cache) => cache.reset()
+    });
+
+    const leaveGroupHandle = useCallback((groupId: number) => {
+        setDialog({
+            type: "destruction",
+            title: "Подтвердите действие",
+            message: "Покинув группу, вы больше не сможете в неё вернуться без её пригласительной ссылки",
+            confirmText: "Покинуть группу",
+            confirmHandler: () => {
+                leaveGroupMutate({ variables: { groupId } });
+            },
+        });
+    }, [leaveGroupMutate, setDialog]);
 
     return <IonPage>
         <IonHeader>
@@ -147,7 +166,7 @@ let SelectGroup: React.FC<Props> = () => {
                                         <IonItemOptions side="end">
                                             <IonItemOption
                                                 color="danger"
-                                                onClick={() => leaveGroupMutate({ variables: { groupId } })}
+                                                onClick={() => leaveGroupHandle(groupId)}
                                             >
                                                 Покинуть
                                             </IonItemOption>
