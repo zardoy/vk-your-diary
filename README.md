@@ -2,6 +2,13 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Расширения
+
+Не знаю, можно ли в VSCode создать файл с рекомендуемыми расширениями, но вот что я советую поставить что бы балдеть:
+
+- [TypeScript Import Sorter](https://marketplace.visualstudio.com/items?itemName=mike-co.import-sorter) ставим, заходим в настройки включаем удаление неиспользованных импортов, включаем сохранение на каждом сейве, а также `maximumNumberOfImportExpressionsPerLine.type` ставим на `newLineEachExpressionAfterCountLimit`. Всё! Балдеем от структурированных импортов и отсутствия проблем на CI из-за предупреждений об неиспользованных импортах!
+- [Apollo GraphQL](https://marketplace.visualstudio.com/items?itemName=apollographql.vscode-apollo) - Автодополнение и подсветка синтаксиса GraphQL везде после `graphql`. (хотя типы запросов и мутаций генерируются независимо соответствующим NPM скриптом).
+
 ## Available Scripts
 
 In the project directory, you can run:
