@@ -45,7 +45,7 @@ let MyApolloProvider: React.FC<Props> = ({ children }) => {
             setDialog({
                 type: "message",
                 title: isKnownOperation ? operationErrorTitle(operationType as any, operation.operationName) : "GraphQL Error",
-                message: networkError ? networkError.message : "Произошло что-то странное..."
+                message: networkError ? networkError.message : "Произошло что-то страшное..."
             });
         });
 
