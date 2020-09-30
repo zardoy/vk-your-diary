@@ -1,5 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonInput, IonButton, IonListHeader, IonRadio, IonRadioGroup, IonToggle, IonTextarea, useIonRouter } from "@ionic/react";
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonInput, IonButton, IonListHeader, IonRadio, IonRadioGroup, IonToggle, IonTextarea, useIonRouter, IonButtons, IonBackButton } from "@ionic/react";
 import { useFormik } from "formik";
 import React from "react";
 import { CreateGroupVariables, CreateGroup as CreateGroupMutation } from "./__generated__/CreateGroup";
@@ -32,7 +32,7 @@ let CreateGroup: React.FC<Props> = () => {
         }
     });
 
-    const formik = useFormik({
+    const { handleSubmit, handleChange, values, setFieldValue, errors: formikErrors } = useFormik({
         initialValues: {
             groupName: "",
             description: "",
@@ -50,6 +50,9 @@ let CreateGroup: React.FC<Props> = () => {
     return <IonPage>
         <IonHeader>
             <IonToolbar>
+                <IonButtons slot="start">
+                    <IonBackButton />
+                </IonButtons>
                 <IonTitle>Создать группу</IonTitle>
             </IonToolbar>
         </IonHeader>
@@ -59,13 +62,13 @@ let CreateGroup: React.FC<Props> = () => {
                     <IonTitle size="large">Создать группу</IonTitle>
                 </IonToolbar>
             </IonHeader>
-            <form onSubmit={formik.submitForm}>
+            <form onSubmit={handleSubmit}>
                 <IonList lines="full">
                     <IonItem>
                         <IonLabel position="stacked">Название группы</IonLabel>
-                        <IonInput maxlength={50} clearInput onIonChange={formik.handleChange} required name="groupName" />
+                        <IonInput maxlength={50} clearInput onIonChange={handleChange} required name="groupName" />
                     </IonItem>
-                    <IonRadioGroup name="isModerated" value={formik.values["isModerated"]} onIonChange={formik.handleChange}>
+                    <IonRadioGroup name="isModerated" value={values["isModerated"]} onIonChange={handleChange}>
                         <IonListHeader>
                             <IonLabel>Тип группы</IonLabel>
                         </IonListHeader>
@@ -84,8 +87,8 @@ let CreateGroup: React.FC<Props> = () => {
                         <IonLabel>Пригласительная ссылка</IonLabel>
                         <IonToggle
                             name="enableInviteLink"
-                            checked={formik.values["enableInviteLink"]}
-                            onIonChange={e => formik.setFieldValue("enableInviteLink", e.detail.checked)}
+                            checked={values["enableInviteLink"]}
+                            onIonChange={e => setFieldValue("enableInviteLink", e.detail.checked)}
                         />
                     </IonItem>
                 </IonList>
@@ -93,14 +96,14 @@ let CreateGroup: React.FC<Props> = () => {
                     <IonTextarea
                         name="description"
                         placeholder="Описание (необязательно)"
-                        value={formik.values["description"]}
-                        onIonChange={formik.handleChange}
+                        value={values["description"]}
+                        onIonChange={handleChange}
                         maxlength={400}
                     />
                 </IonItem>
                 <IonButton
                     expand="block"
-                    disabled={Object.keys(formik.errors).length !== 0}
+                    disabled={Object.keys(formikErrors).length !== 0}
                     type="submit"
                 >Создать группу</IonButton>
                 {/* <p>
