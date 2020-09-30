@@ -118,6 +118,7 @@ let MyApolloProvider: React.FC<Props> = ({ children }) => {
                             role: "cancel"
                         }, {
                             text: dialog.confirmText,
+                            role: "destructive",
                             handler: dialog.confirmHandler
                         }]}
                     /> : null)
