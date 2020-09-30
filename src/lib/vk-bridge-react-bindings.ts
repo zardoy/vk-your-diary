@@ -30,5 +30,6 @@ export const useVKBridge = ({ darkSchemeBodyClass }: HookParams) => {
         return () => {
             vkBridge.unsubscribe(listener);
         };
+        // eslint-disable-next-line
     }, []);
 };
