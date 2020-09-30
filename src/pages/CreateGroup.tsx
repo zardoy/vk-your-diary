@@ -1,7 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonInput, IonAlert, IonButton, IonListHeader, IonRadio, IonRadioGroup, IonToggle, IonTextarea, IonLoading } from "@ionic/react";
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonInput, IonButton, IonListHeader, IonRadio, IonRadioGroup, IonToggle, IonTextarea, IonLoading } from "@ionic/react";
 import { useFormik } from "formik";
-import React, { useState } from "react";
+import React from "react";
 import { CreateGroupVariables, CreateGroup as CreateGroupMutation } from "./__generated__/CreateGroup";
 
 interface Props {
@@ -16,10 +16,21 @@ const CREATE_GROUP_MUTATION = gql`
 // todo formik
 
 let CreateGroup: React.FC<Props> = () => {
-    const [createNewGroupErr, setCreateNewGroupErr] = useState(null as null | string);
+    // const [fetchJoinedGroups, { loading: }]
 
-    const [createGroupMutation, { loading: creatingGroup }] = useMutation<CreateGroupMutation, CreateGroupVariables>(CREATE_GROUP_MUTATION, {
-        onError: (err) => setCreateNewGroupErr(err.message),
+    const [mutateCreateGroup, { loading: creatingGroup }] = useMutation<CreateGroupMutation, CreateGroupVariables>(CREATE_GROUP_MUTATION, {
+        update(cache, { data }) {
+            if (!data) return;
+            // update joinedGroups data
+            // data.createGroup
+            // cache.modify({
+            //     fields: {
+            //         group: {
+            //             inviteToken: 
+            //         }
+            //     }
+            // })
+        },
         onCompleted(data) {
             alert("отстань.");
         }
@@ -34,7 +45,7 @@ let CreateGroup: React.FC<Props> = () => {
         },
         onSubmit: async (formData) => {
             console.log(formData);
-            createGroupMutation({
+            mutateCreateGroup({
                 variables: formData
             });
         }
@@ -52,13 +63,6 @@ let CreateGroup: React.FC<Props> = () => {
                     <IonTitle size="large">Создать группу</IonTitle>
                 </IonToolbar>
             </IonHeader>
-            <IonAlert
-                isOpen={createNewGroupErr !== null}
-                header="Не удалось создать новую группу"
-                message={String(createNewGroupErr)}
-                onDidDismiss={() => setCreateNewGroupErr(null)}
-                buttons={["OK"]}
-            />
             {creatingGroup && <IonLoading
                 isOpen={true}
                 translucent
@@ -113,7 +117,7 @@ let CreateGroup: React.FC<Props> = () => {
                 </p>
             </form>
         </IonContent>
-    </IonPage >;
+    </IonPage>;
 };
 
 export default CreateGroup;

@@ -1,4 +1,4 @@
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonList, IonItemOption, IonItemOptions, IonItemSliding, IonAvatar, IonNote, IonIcon, IonLoading, IonButton, IonAlert, IonActionSheet, useIonRouter } from "@ionic/react";
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonList, IonItemOption, IonItemOptions, IonItemSliding, IonAvatar, IonNote, IonIcon, IonLoading, IonButton, IonActionSheet, useIonRouter } from "@ionic/react";
 import React, { useCallback, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { JoinedGroups } from "./__generated__/JoinedGroups";
@@ -25,11 +25,9 @@ interface Props {
 
 let SelectGroup: React.FC<Props> = () => {
     // STATE
-    const [fetchGroupsErr, setFetchGroupsErr] = useState(null as null | string);
-    const [openAddGroup, setOpenAddGroup] = useState(false);
+    const [openAddGroupMenu, setOpenAddGroupMenu] = useState(false);
 
     const { loading, data, refetch: refetchGroups } = useQuery<JoinedGroups>(JOINED_GROUP_QUERY, {
-        onError: (err) => { console.log("error", err); setFetchGroupsErr(err.message); },
         notifyOnNetworkStatusChange: true
     });
 
@@ -52,9 +50,9 @@ let SelectGroup: React.FC<Props> = () => {
                 </IonToolbar>
             </IonHeader>
             <IonActionSheet
-                isOpen={openAddGroup}
+                isOpen={openAddGroupMenu}
                 header="Добавить группу"
-                onDidDismiss={() => setOpenAddGroup(false)}
+                onDidDismiss={() => setOpenAddGroupMenu(false)}
                 buttons={[
                     {
                         text: "Присоединится",
@@ -75,13 +73,6 @@ let SelectGroup: React.FC<Props> = () => {
                         role: "cancel"
                     }
                 ]}
-            />
-            <IonAlert
-                isOpen={fetchGroupsErr !== null}
-                header="Не удалось получить список групп"
-                message={String(fetchGroupsErr)}
-                onDidDismiss={() => setFetchGroupsErr(null)}
-                buttons={["OK"]}
             />
             {
                 loading ? <IonLoading
@@ -115,7 +106,7 @@ let SelectGroup: React.FC<Props> = () => {
                             }
                             {
                                 data.joinedGroups.length < GROUP_LIMIT &&
-                                <IonItem button onClick={() => setOpenAddGroup(true)}>
+                                <IonItem button onClick={() => setOpenAddGroupMenu(true)}>
                                     <IonIcon slot="start" icon={addCircle} style={{ color: "lime" }} />
                                     <IonLabel>Добавить группу</IonLabel>
                                 </IonItem>

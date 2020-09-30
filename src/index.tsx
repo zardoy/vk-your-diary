@@ -2,20 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 // include all app styles
 import "./styles";
 
-const apolloClient = new ApolloClient({
-    uri: process.env.REACT_APP_GRAPHQL_ENDPOINT,
-    cache: new InMemoryCache()
-});
-
 ReactDOM.render(
-    <ApolloProvider client={apolloClient}>
-        <App />
-    </ApolloProvider>,
+    <App />,
     document.getElementById('root')
 );
 
