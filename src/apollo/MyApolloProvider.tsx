@@ -56,7 +56,8 @@ let MyApolloProvider: React.FC<Props> = ({ children }) => {
             const observable = forward(operation);
             setLoaderText(operationContext.loaderText || "");
             observable.subscribe({
-                complete: () => setLoaderText(null)
+                complete: () => setLoaderText(null),
+                error: () => setLoaderText(null)
             });
             return observable;
         });
