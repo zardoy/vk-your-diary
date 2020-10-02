@@ -23,6 +23,7 @@ import {
     useIonRouter
 } from "@ionic/react";
 
+import SecondaryText from "../components/SecondaryText";
 import { CreateGroup as CreateGroupMutation, CreateGroupVariables } from "./__generated__/CreateGroup";
 
 interface Props {
@@ -34,7 +35,11 @@ const CREATE_GROUP_MUTATION = gql`
         createGroup(isModerated: $isModerated, groupName: $groupName, description: $description, enableInviteLink: $enableInviteLink)
     }
 `;
-// todo formik
+
+const GROUP_IS_MODERATED_DESCRIPTION = {
+    true: `В Модерируемых группах специально назначение участники (модераторы) смогут вносить изменения в ДЗ.`,
+    false: `В открытых группах все её участники могут вносить изменения в ДЗ.`
+};
 
 let CreateGroup: React.FC<Props> = () => {
     const router = useIonRouter();
@@ -86,7 +91,7 @@ let CreateGroup: React.FC<Props> = () => {
             <form onSubmit={handleSubmit}>
                 <IonList lines="full">
                     <IonItem>
-                        <IonLabel position="stacked">Название группы</IonLabel>
+                        <IonLabel position="floating">Название группы</IonLabel>
                         <IonInput maxlength={50} clearInput onIonChange={handleChange} required name="groupName" />
                     </IonItem>
                     <IonRadioGroup name="isModerated" value={values["isModerated"]} onIonChange={handleChange}>
@@ -104,6 +109,11 @@ let CreateGroup: React.FC<Props> = () => {
                             <IonRadio slot="start" value={true} />
                         </IonItem>
                     </IonRadioGroup>
+                    {/*
+                    //@ts-ignore */}
+                    <SecondaryText>{GROUP_IS_MODERATED_DESCRIPTION[values["isModerated"]]}</SecondaryText>
+                </IonList>
+                <IonList>
                     <IonItem>
                         <IonLabel>Пригласительная ссылка</IonLabel>
                         <IonToggle
@@ -112,25 +122,23 @@ let CreateGroup: React.FC<Props> = () => {
                             onIonChange={e => setFieldValue("enableInviteLink", e.detail.checked)}
                         />
                     </IonItem>
+                    <IonItem>
+                        <IonLabel position="floating">Описание группы (необязательно)</IonLabel>
+                        <IonTextarea
+                            name="description"
+                            value={values["description"]}
+                            onIonChange={handleChange}
+                            maxlength={400}
+                        />
+                    </IonItem>
                 </IonList>
-                <IonItem>
-                    <IonTextarea
-                        name="description"
-                        placeholder="Описание (необязательно)"
-                        value={values["description"]}
-                        onIonChange={handleChange}
-                        maxlength={400}
-                    />
-                </IonItem>
+                <SecondaryText>Всё это можно будет изменить позже в настройках.</SecondaryText>
                 <IonButton
                     expand="block"
                     disabled={Object.keys(formikErrors).length !== 0}
                     type="submit"
                 >Создать группу</IonButton>
-                {/* <p>
-                    // todo
-                    Всё это можно будет изменить в настройках группы.
-                </p> */}
+
             </form>
         </IonContent>
     </IonPage>;

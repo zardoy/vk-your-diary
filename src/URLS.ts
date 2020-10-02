@@ -1,5 +1,6 @@
 export default {
-    JOINED_GROUPS: "/joined-groups/",
+    SELECT_GROUP: "/select-group/",
     CREATE_GROUP: "/create-group/",
-    JOIN_GROUP: "/join-group/"
+    JOIN_GROUP: "/join-group/",
+    GROUP_VIEW: "/group/"
 };

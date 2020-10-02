@@ -99,10 +99,10 @@ let JoinGroupComponent: React.FC<Props> = () => {
 
     return <IonPage>
         <IonHeader>
-            <IonButtons slot="start">
-                <IonBackButton />
-            </IonButtons>
             <IonToolbar>
+                <IonButtons slot="start">
+                    <IonBackButton />
+                </IonButtons>
                 <IonTitle>Присоединиться к группе</IonTitle>
             </IonToolbar>
         </IonHeader>
@@ -123,7 +123,7 @@ let JoinGroupComponent: React.FC<Props> = () => {
             <form onSubmit={handleSubmit}>
                 <IonList>
                     <IonItem>
-                        <IonLabel position="stacked">Ссылка или ключ приглашения группы</IonLabel>
+                        <IonLabel position="floating">Ссылка или ключ приглашения группы</IonLabel>
                         <IonInput
                             clearInput
                             onIonChange={handleChange}
