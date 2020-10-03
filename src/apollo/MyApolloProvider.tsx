@@ -40,26 +40,32 @@ let MyApolloProvider: React.FC<Props> = ({ children }) => {
             uri: process.env.REACT_APP_GRAPHQL_ENDPOINT
         });
 
-        const errorLink = onError(({ operation, networkError }) => {
+        const errorLink = onError(({ operation, networkError, graphQLErrors }) => {
             // todo low fix typings
             const operationType = (operation.query.definitions[0] as any).operation;
             const isKnownOperation = operationType === "query" || operationType === "mutate";
             setDialog({
                 type: "message",
                 title: isKnownOperation ? operationErrorTitle(operationType as any, operation.operationName) : "GraphQL Error",
-                message: networkError ? networkError.message : "Произошло что-то страшное..."
+                message:
+                    networkError?.message ??
+                    graphQLErrors?.[0].message ??
+                    "Произошло что-то страшное..."
             });
         });
 
         const loaderLink = new ApolloLink((operation, forward) => {
             const operationContext = operation.getContext();
-            const observable = forward(operation);
-            setLoaderText(operationContext.loaderText || "");
-            observable.subscribe({
-                complete: () => setLoaderText(null),
-                error: () => setLoaderText(null)
+            if (operationContext.loaderText !== null)
+                setLoaderText(operationContext.loaderText || "");
+            // todo why does it call another query
+            // observable.subscribe({
+            //     complete: () => console.log("COMPLETE")
+            // });
+            return forward(operation).map(data => {
+                setLoaderText(null);
+                return data;
             });
-            return observable;
         });
 
         const authLink = setContext((_, { headers }) => {
