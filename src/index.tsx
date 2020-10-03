@@ -6,6 +6,8 @@ import * as serviceWorker from './serviceWorker';
 // include all app styles
 import "./styles";
 
+if (process.env.NODE_ENV === "development") console.clear();
+
 ReactDOM.render(
     <App />,
     document.getElementById('root')

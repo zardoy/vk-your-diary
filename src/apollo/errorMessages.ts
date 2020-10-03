@@ -11,7 +11,8 @@ const MESSAGES: Record<"query" | "mutate", Record<"add" | "full", Record<string,
     mutate: {
         add: {
             CreateGroup: "создать новую группу",
-            joinGroup: "присоединится к группе"
+            joinGroup: "присоединится к группе",
+            LeaveGroup: "покинуть группу"
         },
         full: {}
     }

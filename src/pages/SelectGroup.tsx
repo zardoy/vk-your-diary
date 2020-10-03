@@ -25,6 +25,7 @@ import {
     useIonRouter
 } from "@ionic/react";
 
+import { selectedGroupIdVar } from "../apollo/cache";
 import { useAppDialogContext } from "../apollo/MyApolloProvider";
 import { vkTapticEvent } from "../lib/vk-taptic-control";
 import URLS from "../URLS";
@@ -77,7 +78,8 @@ let SelectGroup: React.FC<Props> = () => {
 
 
     const openGroup = useCallback((groupId: number) => {
-
+        selectedGroupIdVar(groupId);
+        router.push(URLS.GROUP_VIEW);
     }, []);
 
     const refreshGroupsForPtr = useCallback((event: CustomEvent<RefresherEventDetail>) => {
@@ -87,7 +89,9 @@ let SelectGroup: React.FC<Props> = () => {
     }, [refetchGroups]);
 
     const [leaveGroupMutate] = useMutation<LeaveGroup, LeaveGroupVariables>(LEAVE_GROUP_MUTATION, {
-        update: (cache) => cache.reset()
+        update: (cache, { errors }) => {
+
+        }
     });
 
     const leaveGroupHandle = useCallback((groupId: number) => {

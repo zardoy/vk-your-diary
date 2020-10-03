@@ -25,8 +25,8 @@ const App: React.FC = () => {
                 {/* // todo split into 2 components */}
                 <MyApolloProvider>
                     <IonRouterOutlet>
-                        <Route path="/" exact render={() => <Redirect to={URLS.JOINED_GROUPS} />} />
-                        <Route path={URLS.JOINED_GROUPS} exact component={SelectGroup} />
+                        <Route path="/" exact render={() => <Redirect to={URLS.SELECT_GROUP} />} />
+                        <Route path={URLS.SELECT_GROUP} exact component={SelectGroup} />
                         <Route path={URLS.CREATE_GROUP} exact component={CreateGroup} />
                         <Route path={URLS.JOIN_GROUP} exact component={JoinGroup} />
                         <Route path="/group/" component={GroupTabs} />
