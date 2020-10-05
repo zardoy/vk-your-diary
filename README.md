@@ -2,7 +2,7 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-[![Build Status](https://travis-ci.com/zardoy/vk-your-diary.svg?branch=master)](https://travis-ci.com/zardoy/vk-your-diary)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/zardoy/vk-your-diary?label=App%20Version) [![Build Status](https://travis-ci.com/zardoy/vk-your-diary.svg?branch=master)](https://travis-ci.com/zardoy/vk-your-diary)
 
 ## Расширения
 
