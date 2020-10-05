@@ -7,8 +7,13 @@
 // GraphQL mutation operation: LeaveGroup
 // ====================================================
 
+export interface LeaveGroup_group {
+  __typename: "GroupMutation";
+  leaveForever: boolean;
+}
+
 export interface LeaveGroup {
-  leaveGroup: boolean;
+  group: LeaveGroup_group;
 }
 
 export interface LeaveGroupVariables {

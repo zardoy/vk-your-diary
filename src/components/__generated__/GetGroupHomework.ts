@@ -4,26 +4,26 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetGroupHomeworkNow
+// GraphQL query operation: GetGroupHomework
 // ====================================================
 
-export interface GetGroupHomeworkNow_group_homeworkByDay {
+export interface GetGroupHomework_group_homeworkByDay {
   __typename: "Hometask";
   id: number;
   subject: string;
   text: string;
 }
 
-export interface GetGroupHomeworkNow_group {
+export interface GetGroupHomework_group {
   __typename: "GroupQuery";
-  homeworkByDay: GetGroupHomeworkNow_group_homeworkByDay[];
+  homeworkByDay: GetGroupHomework_group_homeworkByDay[];
 }
 
-export interface GetGroupHomeworkNow {
-  group: GetGroupHomeworkNow_group;
+export interface GetGroupHomework {
+  group: GetGroupHomework_group;
 }
 
-export interface GetGroupHomeworkNowVariables {
+export interface GetGroupHomeworkVariables {
   groupId: number;
-  dateNow: string;
+  homeworkDate: any;
 }

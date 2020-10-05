@@ -24,6 +24,7 @@ import {
     IonToolbar,
     useIonRouter
 } from "@ionic/react";
+import { vkGetParam } from "@zardoy/vk-params";
 
 import { selectedGroupIdVar } from "../apollo/cache";
 import { useAppDialogContext } from "../apollo/MyApolloProvider";
@@ -31,6 +32,7 @@ import { vkTapticEvent } from "../lib/vk-taptic-control";
 import URLS from "../URLS";
 import { GetJoinedGroups } from "./__generated__/GetJoinedGroups";
 import { LeaveGroup, LeaveGroupVariables } from "./__generated__/LeaveGroup";
+import { TransferOwnerAndLeaveGroup, TransferOwnerAndLeaveGroupVariables } from "./__generated__/TransferOwnerAndLeaveGroup";
 
 // todo
 const GROUP_LIMIT = 20;
@@ -48,7 +50,18 @@ const JOINED_GROUP_QUERY = gql`
 `;
 const LEAVE_GROUP_MUTATION = gql`
     mutation LeaveGroup($groupId: Int!) {
-        leaveGroup(groupId: $groupId) 
+        group(id: $groupId) {
+            leaveForever
+        }
+    }
+`;
+
+const TRANSFER_OWNER_AND_LEAVE_GROUP_MUTATION = gql`
+    mutation TransferOwnerAndLeaveGroup($groupId: Int!, $newOwnerId: String!) {
+        group(id: $groupId) {
+            transferOwner(newOwnerId: $newOwnerId)
+            leaveForever
+        }
     }
 `;
 
@@ -57,7 +70,7 @@ interface Props {
 
 let SelectGroup: React.FC<Props> = () => {
     const router = useIonRouter();
-    const { setDialog } = useAppDialogContext();
+    const { addDialog } = useAppDialogContext();
 
     // STATE
     const [openAddGroupMenu, setOpenAddGroupMenu] = useState(false);
@@ -65,7 +78,7 @@ let SelectGroup: React.FC<Props> = () => {
     /* PTR - Pull To Refresh */
     const PTRCompleteCallback = useRef(null as null | (() => void));
 
-    const { data, refetch: refetchGroups } = useQuery<GetJoinedGroups>(JOINED_GROUP_QUERY, {
+    const { data: joinedGroupsData, refetch: refetchGroups } = useQuery<GetJoinedGroups>(JOINED_GROUP_QUERY, {
         notifyOnNetworkStatusChange: true,
         onCompleted() {
             PTRCompleteCallback.current && PTRCompleteCallback.current();
@@ -76,11 +89,16 @@ let SelectGroup: React.FC<Props> = () => {
         }
     });
 
+    const [transferOwnerAndLeaveGroupMutate] = useMutation<TransferOwnerAndLeaveGroup, TransferOwnerAndLeaveGroupVariables>(TRANSFER_OWNER_AND_LEAVE_GROUP_MUTATION, {
+        context: {
+            loaderText: "Передача владельца и выход из группы..."
+        }
+    });
 
     const openGroup = useCallback((groupId: number) => {
         selectedGroupIdVar(groupId);
-        router.push(URLS.GROUP_VIEW);
-    }, []);
+        router.push(URLS.GROUP_VIEW + "diary");
+    }, [router]);
 
     const refreshGroupsForPtr = useCallback((event: CustomEvent<RefresherEventDetail>) => {
         PTRCompleteCallback.current = event.detail.complete;
@@ -90,21 +108,39 @@ let SelectGroup: React.FC<Props> = () => {
 
     const [leaveGroupMutate] = useMutation<LeaveGroup, LeaveGroupVariables>(LEAVE_GROUP_MUTATION, {
         update: (cache, { errors }) => {
-
+            cache.reset();
         }
     });
 
     const leaveGroupHandle = useCallback((groupId: number) => {
-        setDialog({
-            type: "destruction",
-            title: "Подтвердите действие",
-            message: "Покинув группу, вы больше не сможете в неё вернуться без её пригласительной ссылки",
-            confirmText: "Покинуть группу",
-            confirmHandler: () => {
-                leaveGroupMutate({ variables: { groupId } });
-            },
-        });
-    }, [leaveGroupMutate, setDialog]);
+        const leavingGroup = joinedGroupsData!.joinedGroups.find(({ id }) => id === groupId)!;
+        const leaveConfirmHandle = () => leaveGroupMutate({ variables: { groupId } });
+        if (leavingGroup.membersCount === 1) {
+            addDialog({
+                // todo super dangerous
+                type: "destruction",
+                title: "Подтвердите действие",
+                message: "Покинув группу, она удалится безвозвратно, включая все данные и ДЗ",
+                confirmText: "Покинуть группу",
+                confirmHandler: leaveConfirmHandle
+            });
+        } else if (+leavingGroup.ownerId === vkGetParam("user_id")) {
+            // transferOwnerAndLeaveGroupMutate({
+            //     variables: {
+            //         groupId,
+            //         newOwnerId: selectedOwnerId.toString()
+            //     }
+            // });
+        } else {
+            addDialog({
+                type: "destruction",
+                title: "Подтвердите действие",
+                message: "Покинув группу, вы больше не сможете в неё вернуться без её пригласительной ссылки",
+                confirmText: "Покинуть группу",
+                confirmHandler: leaveConfirmHandle
+            });
+        }
+    }, [leaveGroupMutate, addDialog, joinedGroupsData]);
 
     return <IonPage>
         <IonHeader>
@@ -147,12 +183,12 @@ let SelectGroup: React.FC<Props> = () => {
                 ]}
             />
             {
-                !data ? <>
+                !joinedGroupsData ? <>
                     <IonButton expand="block" onClick={() => refetchGroups()}>Перезагрузить</IonButton>
                 </> :
                     <IonList lines="full">
                         {
-                            data.joinedGroups.map(({ id: groupId, membersCount, name: groupName, ownerSmallAvatar }) => {
+                            joinedGroupsData.joinedGroups.map(({ id: groupId, membersCount, name: groupName, ownerSmallAvatar }) => {
                                 return (
                                     <IonItemSliding key={groupId}>
                                         <IonItem button onClick={() => openGroup(groupId)}>
@@ -180,7 +216,7 @@ let SelectGroup: React.FC<Props> = () => {
                             })
                         }
                         {
-                            data.joinedGroups.length < GROUP_LIMIT &&
+                            joinedGroupsData.joinedGroups.length < GROUP_LIMIT &&
                             <IonItem button onClick={() => setOpenAddGroupMenu(true)}>
                                 <IonIcon slot="start" icon={addCircle} style={{ color: "lime" }} />
                                 <IonLabel>Добавить группу</IonLabel>

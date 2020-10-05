@@ -17,7 +17,7 @@ setupConfig({
 });
 
 const App: React.FC = () => {
-    useVKBridge({ darkSchemeBodyClass: "dark" });
+    useVKBridge({ darkSchemeBodyClass: "theme-dark" });
 
     return <IonApp>
         <IonReactHashRouter>

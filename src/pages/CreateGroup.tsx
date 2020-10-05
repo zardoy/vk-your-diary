@@ -92,7 +92,14 @@ let CreateGroup: React.FC<Props> = () => {
                 <IonList lines="full">
                     <IonItem>
                         <IonLabel position="floating">Название группы</IonLabel>
-                        <IonInput maxlength={50} clearInput onIonChange={handleChange} required name="groupName" />
+                        <IonInput
+                            value={values["groupName"]}
+                            maxlength={50}
+                            clearInput
+                            onIonChange={handleChange}
+                            required
+                            name="groupName"
+                        />
                     </IonItem>
                     <IonRadioGroup name="isModerated" value={values["isModerated"]} onIonChange={handleChange}>
                         <IonListHeader>
@@ -132,7 +139,7 @@ let CreateGroup: React.FC<Props> = () => {
                         />
                     </IonItem>
                 </IonList>
-                <SecondaryText>Всё это можно будет изменить позже в настройках.</SecondaryText>
+                <SecondaryText>Всё это можно будет изменить в настройках позже.</SecondaryText>
                 <IonButton
                     expand="block"
                     disabled={Object.keys(formikErrors).length !== 0}

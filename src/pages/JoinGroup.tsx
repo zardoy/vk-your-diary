@@ -31,28 +31,32 @@ const JOIN_GROUP_MUTATION = gql`
     }
 `;
 
+class TokenValidationError extends Error {
+}
+
 const getInviteToken = (tokenOrLink: string): string | null => {
     const tokenRegex = /\w{8}-\w{4}-11eb-\w{4}-\w{12}/;
     if (tokenRegex.test(tokenOrLink)) {// its token
         return tokenOrLink;
     } else {// maybe its a link
+        let url: URL;
         try {
-            const url = new URL(tokenOrLink);
-            if (url.hostname !== "vk.com") throw new TypeError("Its not even a VK link");
-            if (!url.pathname.startsWith(`/app${vkGetParam("app_id")}`)) throw new TypeError(`This link doesn't belong to this vk app`);
-            if (!url.hash.startsWith(`#invite`)) throw new TypeError(`This link doesn't contain invite token`);
-            const tokenFromLink = url.hash.slice(`#invite`.length);
-            tokenRegex.lastIndex = 0;
-            if (!tokenRegex.test(tokenFromLink)) throw new TypeError(`Invalid invite token`);
-            return tokenFromLink;
+            url = new URL(tokenOrLink);
         } catch (err) {
-            return null;
+            throw new TokenValidationError(`It's not either token or invite link.`);
         }
+        if (url.hostname !== "vk.com") throw new TokenValidationError("Its not even a VK link");
+        if (!url.pathname.startsWith(`/app${vkGetParam("app_id")}`)) throw new TokenValidationError(`This link doesn't belong to this vk app`);
+        if (!url.hash.startsWith(`#invite`)) throw new TokenValidationError(`This link doesn't contain invite token`);
+        const tokenFromLink = url.hash.slice(`#invite`.length);
+        tokenRegex.lastIndex = 0;
+        if (!tokenRegex.test(tokenFromLink)) throw new TokenValidationError(`Invalid invite token in link`);
+        return tokenFromLink;
     }
 };
 
 let JoinGroupComponent: React.FC<Props> = () => {
-    const { setDialog } = useAppDialogContext();
+    const { addDialog } = useAppDialogContext();
 
     const [joinGroupMutate] = useMutation<JoinGroup, JoinGroupVariables>(JOIN_GROUP_MUTATION, {
         context: { loaderText: "Поиск группы..." }
@@ -65,7 +69,7 @@ let JoinGroupComponent: React.FC<Props> = () => {
         onSubmit({ inviteLinkOrToken }) {
             const inviteToken = getInviteToken(inviteLinkOrToken);
             if (!inviteToken) {
-                setDialog({
+                addDialog({
                     type: "message",
                     title: "Ошибка",
                     message: "Поле не содержит пригласительной ссылки или токена"
@@ -90,12 +94,12 @@ let JoinGroupComponent: React.FC<Props> = () => {
             });
         } catch (err) {
             // todo error message
-            setDialog({
+            addDialog({
                 type: "message",
                 message: "Не удалось отсканировать QR"
             });
         }
-    }, [joinGroupMutate, setDialog]);
+    }, [joinGroupMutate, addDialog]);
 
     return <IonPage>
         <IonHeader>
