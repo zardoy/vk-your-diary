@@ -1,0 +1,37 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "DEV",
+            "group": {
+                "isDefault": true,
+                "kind": "build"
+            },
+            "dependsOn": [
+                "frontend",
+                "backend"
+            ],
+            "presentation": {
+                "echo": false,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": true
+            },
+            "dependsOrder": "parallel"
+        },
+        {
+            "label": "frontend",
+            "type": "npm",
+            "path": "frontend/package.json",
+            "script": "start"
+        },
+        {
+            "label": "backend",
+            "type": "npm",
+            "path": "backend/package.json",
+            "script": "dev"
+        }
+    ]
+}
