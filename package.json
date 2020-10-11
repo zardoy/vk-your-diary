@@ -42,7 +42,7 @@
         "start": "concurrently \"cross-env PORT=10888 BROWSER=none react-scripts start \" \"wait-on http://localhost:10888 && gulp start:vk-app --silent \" --kill-others-on-fail",
         "build": "react-scripts build",
         "test": "react-scripts test",
-        "generate-graphql": "yarn apollo client:codegen --target=\"typescript\""
+        "generate-graphql": "yarn apollo client:codegen --globalTypesFile=\"src/__generated__/globalTypes.ts\" --target=\"typescript\""
     },
     "vk_com_app_id": "7139517",
     "eslintConfig": {
