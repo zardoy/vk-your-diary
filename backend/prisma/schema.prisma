@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource prisma {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Group {
+  id             Int        @id @default(autoincrement())
+  name           String
+  ownerId        Int
+  createdAt      DateTime   @default(dbgenerated())
+  description    String
+  inviteToken    String?
+  isModerated    Boolean
+  advancedConfig Json?
+  homework       Homework[]
+  members        Member[]
+}
+
+model Member {
+  groupId                 Int
+  userId                  Int
+  joinDate                DateTime @default(dbgenerated())
+  isModerator             Boolean  @default(false)
+  trackHomeworkCompletion Boolean
+  shareHomeworkCompletion Boolean
+  dedicatedGroup          Group    @relation(fields: [groupId], references: [id])
+
+  @@id([groupId, userId])
+}
+
+model File {
+  id                Int      @id @default(autoincrement())
+  homeworkId        Int
+  fileLink          String
+  addedByUserId     Int?
+  dedicatedHomework Homework @relation(fields: [homeworkId], references: [id])
+}
+
+model Homework {
+  id             Int       @id @default(autoincrement())
+  groupId        Int
+  givedTo        DateTime
+  createdBy      DateTime  @default(now())
+  updatedAt      DateTime?
+  subject        String
+  text           String
+  dedicatedGroup Group     @relation(fields: [groupId], references: [id])
+  attachedFiles  File[]
+}
