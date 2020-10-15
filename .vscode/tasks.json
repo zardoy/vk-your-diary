@@ -24,7 +24,7 @@
         {
             "label": "frontend",
             "type": "npm",
-            "path": "frontend/package.json",
+            "path": "package.json",
             "script": "start"
         },
         {
