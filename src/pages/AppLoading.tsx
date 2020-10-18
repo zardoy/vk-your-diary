@@ -1,21 +1,17 @@
 import React from "react";
 
-import { IonContent, IonFab, IonHeader, IonPage, IonSpinner, IonTitle, IonToolbar } from "@ionic/react";
 
-let AppLoading: React.FC = () => {
 
-    return <IonPage>
-        <IonHeader>
-            <IonToolbar>
-                <IonTitle>Твой Дневник</IonTitle>
-            </IonToolbar>
-        </IonHeader>
-        <IonContent>
-            <IonFab horizontal="center" vertical="center">
-                <IonSpinner />
-            </IonFab>
-        </IonContent>
-    </IonPage>;
+import MainLoadingContent from "../components/MainLoadingContent";
+import Page from "../components/Page";
+
+interface Props {
+}
+
+let AppLoading: React.FC<Props> = () => {
+    return <Page noNavbar>
+        <MainLoadingContent />
+    </Page>;
 };
 
 export default AppLoading;

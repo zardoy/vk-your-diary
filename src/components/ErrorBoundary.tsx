@@ -1,9 +1,10 @@
 import React from "react";
 
-import { IonApp, IonButton, IonContent, IonHeader, IonPage } from "@ionic/react";
+import { IonApp, IonButton } from "@ionic/react";
 
 import { forceReloadApp } from "../lib/app-reload";
 import CenterContent from "./CenterContent";
+import Page from "./Page";
 
 export default class extends React.Component<{}, { hasError: boolean; }> {
     state = {
@@ -20,10 +21,7 @@ export default class extends React.Component<{}, { hasError: boolean; }> {
     render() {
         if (this.state.hasError) {
             return <IonApp>
-                <IonPage>
-                    <IonHeader>App Crashed</IonHeader>
-                </IonPage>
-                <IonContent>
+                <Page title="App Crashed">
                     <CenterContent>
                         <h3>Приложение поламалось</h3>
                         {/* todo button roles */}
@@ -34,7 +32,7 @@ export default class extends React.Component<{}, { hasError: boolean; }> {
                             Сообщить о проблеме
                         </IonButton>
                     </CenterContent>
-                </IonContent>
+                </Page>
             </IonApp>;
         }
 
