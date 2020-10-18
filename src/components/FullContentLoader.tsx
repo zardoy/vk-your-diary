@@ -2,13 +2,15 @@ import React from "react";
 
 import { IonSpinner } from "@ionic/react";
 
+import CenterContent from "./CenterContent";
+
 interface Props {
 }
 
 let FullContentLoader: React.FC<Props> = () => {
-    return <div style={{ height: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+    return <CenterContent>
         <IonSpinner />
-    </div>;
+    </CenterContent>;
 };
 
 export default FullContentLoader;
