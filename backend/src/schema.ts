@@ -45,7 +45,7 @@ export const schema = makeSchema({
     },
     outputs: {
         schema: path.join(__dirname, "../api.graphql"),
-        typegen: path.join(__dirname, "./generated/schema-types.d.ts")
+        typegen: path.join(__dirname, "./__generated__/schema-types.d.ts")
     },
     nonNullDefaults: {
         input: true,
