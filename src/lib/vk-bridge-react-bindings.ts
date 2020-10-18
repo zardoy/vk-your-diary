@@ -1,26 +1,20 @@
 import { useEffect } from "react";
 
-import vkBridge, { AppearanceSchemeType, VKBridgeSubscribeHandler } from "@vkontakte/vk-bridge";
+import vkBridge, { VKBridgeSubscribeHandler } from "@vkontakte/vk-bridge";
 
 interface HookParams {
-    darkSchemeBodyClass: string | null | undefined;
+    onUpdatePalette: (newSchema: "light" | "dark") => unknown;
 }
 
-// todo params can be changed
-export const useVKBridge = ({ darkSchemeBodyClass }: HookParams) => {
+export const useVKBridge = ({ onUpdatePalette }: HookParams) => {
     useEffect(() => {
-        const updateAppTheme = (themeScheme: AppearanceSchemeType) => {
-            if (!darkSchemeBodyClass) return;
-            let isDarkTheme = themeScheme === "client_dark" || themeScheme === "space_gray";
-            let { body } = document;
-            if (isDarkTheme) body.classList.add(darkSchemeBodyClass);
-            else body.classList.remove(darkSchemeBodyClass);
-        };
-
         const listener: VKBridgeSubscribeHandler = (e) => {
             switch (e.detail.type) {
                 case "VKWebAppUpdateConfig":
-                    updateAppTheme(e.detail.data.scheme);
+                    const { scheme } = e.detail.data;
+                    onUpdatePalette(
+                        scheme === "client_dark" || scheme === "space_gray" ? "dark" : "light"
+                    );
                     break;
             }
         };
