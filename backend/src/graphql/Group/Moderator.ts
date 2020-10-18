@@ -154,9 +154,20 @@ export default [
                     newData: arg({ type: "NewHomeworkInput" })
                 },
                 async resolve({ groupId }, { homeworkId, newData: { subject, date, text } }, { prisma, userId }) {
-                    if (!date && !subject && !text) throw new UserInputError(`One of the arg must be defined`);
+                    if (!date && !subject && !text) throw new UserInputError(`One of the arg in new data must be defined`);
                     await throwIfNoGroupAccess({ groupId, userId, prisma, level: "moderator" });
                     await throwIfNoHomeworkInGroup({ groupId, homeworkId, prisma });
+                    const dedicatedHomework = (await prisma.homework.findOne({
+                        where: {
+                            id: homeworkId
+                        },
+                        select: {
+                            givedTo: true
+                        }
+                    }))!;
+                    if (dedicatedHomework.givedTo.setDate(dedicatedHomework.givedTo.getDate() - 1) < new Date().getTime())
+                        throw new ForbiddenError("You can't edit archived task");
+                    if (date && +new Date(date) < new Date().getTime()) throw new ForbiddenError("Can't write homework to a previous date.");
                     await prisma.homework.update({
                         where: { id: homeworkId },
                         data: {
