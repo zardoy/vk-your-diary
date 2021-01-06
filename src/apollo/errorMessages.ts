@@ -4,7 +4,7 @@ const FETCH = "получить";
 const MESSAGES: Record<"query" | "mutate", Record<"add" | "full", Record<string, string>>> = {
     query: {
         add: {
-            GetJoinedGroups: "список групп",
+            JoinedGroups: "список групп",
             GetGroupHomework: "получить ДЗ"
         },
         full: {}
@@ -12,8 +12,9 @@ const MESSAGES: Record<"query" | "mutate", Record<"add" | "full", Record<string,
     mutate: {
         add: {
             AddHomework: "добавить задание",
+            EditHomework: "редактировать задание",
             CreateGroup: "создать новую группу",
-            joinGroup: "присоединится к группе",
+            JoinGroup: "присоединится к группе",
             LeaveGroup: "покинуть группу",
             TransferOwnerAndLeaveGroup: "передать владельца и покинуть группу"
         },
