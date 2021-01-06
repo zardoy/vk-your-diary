@@ -1,40 +1,46 @@
-import React from "react";
-import { Redirect, Route } from "react-router-dom";
+import React, { useEffect } from "react";
 
 import { IonApp, IonPage, IonRouterOutlet, setupConfig } from "@ionic/react";
 import { IonReactHashRouter } from "@ionic/react-router";
+import { CssBaseline } from "@material-ui/core";
 
 import MyApolloProvider from "./apollo/MyApolloProvider";
-import GroupTabs from "./GroupTabs";
-import { useVKBridge } from "./lib/vk-bridge-react-bindings";
-import CreateGroup from "./pages/CreateGroup";
-import JoinGroup from "./pages/JoinGroup";
-import SelectGroup from "./pages/SelectGroup";
-import URLS from "./URLS";
+import ErrorBoundary from "./components/ErrorBoundary";
+import MyThemeProvider from "./components/MyThemeProvider";
+import MainRouter from "./MainRouter";
 
 setupConfig({
     backButtonText: "назад"
 });
 
 const App: React.FC = () => {
-    useVKBridge({ darkSchemeBodyClass: "theme-dark" });
+    useEffect(() => {
+        const errorListener = () => {
+            // todo show toast
+        };
+        window.addEventListener("unhandledrejection", errorListener);
+        return () => {
+            window.removeEventListener("unhandledrejection", errorListener);
+        };
+    });
 
-    return <IonApp>
-        <IonReactHashRouter>
-            <IonPage>
-                {/* // todo split into 2 components */}
-                <MyApolloProvider>
-                    <IonRouterOutlet>
-                        <Route path="/" exact render={() => <Redirect to={URLS.SELECT_GROUP} />} />
-                        <Route path={URLS.SELECT_GROUP} exact component={SelectGroup} />
-                        <Route path={URLS.CREATE_GROUP} exact component={CreateGroup} />
-                        <Route path={URLS.JOIN_GROUP} exact component={JoinGroup} />
-                        <Route path="/group/" component={GroupTabs} />
-                    </IonRouterOutlet>
-                </MyApolloProvider>
-            </IonPage>
-        </IonReactHashRouter>
-    </IonApp>;
+    return <ErrorBoundary>
+        <CssBaseline />
+        <MyThemeProvider>
+            <IonApp>
+                <IonReactHashRouter>
+                    <IonPage>
+                        {/* // todo split into 2 components */}
+                        <MyApolloProvider>
+                            <IonRouterOutlet>
+                                <MainRouter />
+                            </IonRouterOutlet>
+                        </MyApolloProvider>
+                    </IonPage>
+                </IonReactHashRouter>
+            </IonApp>
+        </MyThemeProvider>
+    </ErrorBoundary>;
 };
 
 export default App;

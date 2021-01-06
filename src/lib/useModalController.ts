@@ -14,3 +14,5 @@ export const useModalController = ({ onStateUpdate }: { onStateUpdate?: UpdateDi
         closeModal: () => updateModalState(false)
     };
 };
+
+export type ModalController = ReturnType<typeof useModalController>;

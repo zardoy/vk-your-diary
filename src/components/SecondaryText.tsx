@@ -1,10 +1,15 @@
 import React from "react";
 
-interface Props {
+interface Props extends React.ComponentProps<"p"> {
 }
 
-let SecondaryText: React.FC<Props> = ({ children }) => {
-    return <p className="color-secondary-text ion-padding-horizontal ion-padding-bottom">{children}</p>;
+let SecondaryText: React.FC<Props> = ({ children, ...props }) => {
+    return <p
+        {...props}
+        className={"color-secondary-text ion-padding-horizontal ion-padding-bottom " + (props.className || "")}
+    >
+        {children}
+    </p>;
 };
 
 export default SecondaryText;

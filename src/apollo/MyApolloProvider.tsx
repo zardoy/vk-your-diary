@@ -1,12 +1,13 @@
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
-import { ApolloClient, ApolloLink, ApolloProvider, HttpLink, InMemoryCache } from "@apollo/client";
+import { ApolloClient, ApolloLink, ApolloProvider, HttpLink, InMemoryCache, useReactiveVar } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
-import { IonAlert, IonLoading } from "@ionic/react";
+import { IonAlert, IonLoading, IonToast, ToastButton } from "@ionic/react";
 import vkBridge from "@vkontakte/vk-bridge";
 
 import { operationErrorTitle } from "./errorMessages";
+import { onPtrCompleteVar } from "./localState";
 
 type DialogType = {
     type: "message",
@@ -21,9 +22,25 @@ type DialogType = {
     confirmHandler: () => void;
 };
 
+type Toast = {
+    message: string,
+    /**
+     * in ms
+     * @default ```1000```
+     */
+    duration?: number,
+    onClose?: () => unknown,
+    /**
+     * @default ```bottom```
+     */
+    position?: "bottom" | "top" | "middle",
+    buttons?: ToastButton[];
+};
+
 interface DialogContext {
     dialogs: DialogType[],
-    addDialog: (dialog: DialogType) => void;
+    addDialog: (dialog: DialogType) => void,
+    showToast: (toast: Toast) => void;
 }
 
 const dialogContext = React.createContext<DialogContext>(undefined as any);
@@ -36,6 +53,13 @@ let MyApolloProvider: React.FC<Props> = ({ children }) => {
     const [loaderText, setLoaderText] = useState(null as null | string);
     const [dialogs, setDialogs] = useState([] as DialogType[]);
 
+    const onPtrComplete = useReactiveVar(onPtrCompleteVar);
+    const onPtrCompleteRef = useRef(null as null | (() => void));
+
+    useEffect(() => {
+        onPtrCompleteRef.current = onPtrComplete;
+    }, [onPtrComplete]);
+
     const addDialog = useCallback((newDialog: DialogType) => {
         setDialogs(dialogs => [...dialogs, newDialog]);
     }, []);
@@ -44,34 +68,49 @@ let MyApolloProvider: React.FC<Props> = ({ children }) => {
         setDialogs(dialogs => dialogs.slice(0, -1));
     }, []);
 
+    const [toast, setToast] = useState(null as null | Toast);
+
     const apolloClient = useMemo(() => {
         const httpLink = new HttpLink({
             uri: process.env.REACT_APP_GRAPHQL_ENDPOINT
         });
 
+        const onQueryComplete = () => {
+            setLoaderText(null);
+            const { current: ptrCallback } = onPtrCompleteRef;
+            if (ptrCallback) {
+                ptrCallback();
+                onPtrCompleteVar(null);
+            }
+        };
+
         const errorLink = onError(({ operation, networkError, graphQLErrors }) => {
-            // todo low fix typings
+            onQueryComplete();
             vkBridge.send("VKWebAppTapticNotificationOccurred", {
                 type: "error"
             });
+            // todo low fix typings
             const operationType = (operation.query.definitions[0] as any).operation;
             const isKnownOperation = operationType === "query" || operationType === "mutate";
-            setLoaderText(null);
-            addDialog({
-                type: "message",
-                title: isKnownOperation ? operationErrorTitle(operationType as any, operation.operationName) : "GraphQL Error",
-                message:
-                    graphQLErrors?.[0].message ??
-                    networkError?.message ??
-                    "Произошло что-то страшное..."
-            });
+            if (operation.getContext().showError !== false) {
+                addDialog({
+                    type: "message",
+                    title: isKnownOperation ?
+                        operationErrorTitle(operationType as any, operation.operationName) : "GraphQL Error",
+                    message:
+                        graphQLErrors?.[0].message ??
+                        networkError?.message ??
+                        "Произошло что-то страшное..."
+                });
+            }
         });
 
         // todo retry on Code №10 - Internal server error: Unknown error, try later
 
         const loaderLink = new ApolloLink((operation, forward) => {
             const operationContext = operation.getContext();
-            if (operationContext.loaderText !== null)
+            const { current: ptrCallback } = onPtrCompleteRef;
+            if (operationContext.loaderText !== null && !ptrCallback)
                 setLoaderText(operationContext.loaderText || "");
             // todo why does it call another query
             // observable.subscribe({
@@ -79,10 +118,12 @@ let MyApolloProvider: React.FC<Props> = ({ children }) => {
             // });
             const operationType = (operation.query.definitions[0] as any).operation;
             return forward(operation).map(data => {
-                operationType === "mutation" && vkBridge.send("VKWebAppTapticNotificationOccurred", {
-                    type: "success"
-                });
-                setLoaderText(null);
+                onQueryComplete();
+                (!data.errors || data.errors.length === 0)
+                    && operationType === "mutation"
+                    && vkBridge.send("VKWebAppTapticNotificationOccurred", {
+                        type: "success"
+                    });
                 return data;
             });
         });
@@ -112,11 +153,21 @@ let MyApolloProvider: React.FC<Props> = ({ children }) => {
 
     return <>
         {
-            loaderText &&
+            loaderText !== null &&
             <IonLoading
                 isOpen={true}
                 translucent
                 message={loaderText}
+            />
+        }
+        {
+            toast && <IonToast
+                isOpen={true}
+                message={toast.message}
+                position={toast.position ?? "bottom"}
+                duration={toast.duration ?? 1000}
+                buttons={toast.buttons}
+                onDidDismiss={toast.onClose}
             />
         }
         {
@@ -159,7 +210,7 @@ let MyApolloProvider: React.FC<Props> = ({ children }) => {
                     /> : null)
         }
         <ApolloProvider client={apolloClient} >
-            <DialogContextProvider value={{ dialogs, addDialog }}>
+            <DialogContextProvider value={{ dialogs, addDialog, showToast: setToast }}>
                 {children}
             </DialogContextProvider>
         </ApolloProvider>

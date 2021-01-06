@@ -1,32 +1,21 @@
-import { useFormik } from "formik";
 import React, { useCallback } from "react";
 
+import { useFormik } from "formik";
+
 import { gql, useMutation } from "@apollo/client";
-import {
-    IonBackButton,
-    IonButton,
-    IonButtons,
-    IonContent,
-    IonHeader,
-    IonInput,
-    IonItem,
-    IonLabel,
-    IonList,
-    IonPage,
-    IonTitle,
-    IonToolbar
-} from "@ionic/react";
+import { IonButton, IonInput, IonItem, IonLabel, IonList } from "@ionic/react";
 import vkBridge from "@vkontakte/vk-bridge";
 import { vkGetParam } from "@zardoy/vk-params";
 
-import { useAppDialogContext } from "../apollo/MyApolloProvider";
+import { useAppDialogContext } from "../../apollo/MyApolloProvider";
+import Page from "../../components/Page";
 import { JoinGroup, JoinGroupVariables } from "./__generated__/JoinGroup";
 
 interface Props {
 }
 
 const JOIN_GROUP_MUTATION = gql`
-    mutation JoinGroup($inviteToken: String!) {
+    mutation JoinGroup($inviteToken: NonEmptyString!) {
         joinGroup(inviteToken: $inviteToken)
     }
 `;
@@ -101,48 +90,34 @@ let JoinGroupComponent: React.FC<Props> = () => {
         }
     }, [joinGroupMutate, addDialog]);
 
-    return <IonPage>
-        <IonHeader>
-            <IonToolbar>
-                <IonButtons slot="start">
-                    <IonBackButton />
-                </IonButtons>
-                <IonTitle>Присоединиться к группе</IonTitle>
-            </IonToolbar>
-        </IonHeader>
-        <IonContent fullscreen>
-            <IonHeader collapse="condense" translucent>
-                <IonToolbar>
-                    <IonTitle size="large">Присоединиться к группе</IonTitle>
-                </IonToolbar>
-            </IonHeader>
-            <IonButton
-                expand="block"
-                fill="outline"
-                disabled={!vkBridge.supports("VKWebAppOpenQR")}
-                onClick={scanQR}
-            >
-                Сканировать QR
+    return <Page title="Присоединиться к группе" backButton withLargeTitle>
+        <IonButton
+            expand="block"
+            fill="outline"
+            disabled={!vkBridge.supports("VKWebAppOpenQR")}
+            onClick={scanQR}
+        >
+            Сканировать QR
             </IonButton>
-            <form onSubmit={handleSubmit}>
-                <IonList>
-                    <IonItem>
-                        <IonLabel position="floating">Ссылка или ключ приглашения группы</IonLabel>
-                        <IonInput
-                            clearInput
-                            onIonChange={handleChange}
-                            required
-                            value={values["inviteLinkOrToken"]}
-                            name="inviteLinkOrToken"
-                            autoCapitalize="off"
-                            enterkeyhint="enter"
-                        />
-                    </IonItem>
-                </IonList>
-                <IonButton expand="block" type="submit">Войти в группу</IonButton>
-            </form>
-        </IonContent>
-    </IonPage>;
+        <form onSubmit={handleSubmit}>
+            <IonList>
+                <IonItem>
+                    {/* TODO key-outline icon */}
+                    <IonLabel position="floating">Ссылка или ключ приглашения группы</IonLabel>
+                    <IonInput
+                        clearInput
+                        onIonChange={handleChange}
+                        required
+                        value={values["inviteLinkOrToken"]}
+                        name="inviteLinkOrToken"
+                        autoCapitalize="off"
+                        enterkeyhint="enter"
+                    />
+                </IonItem>
+            </IonList>
+            <IonButton expand="block" type="submit">Войти в группу</IonButton>
+        </form>
+    </Page>;
 };
 
 export default JoinGroupComponent;

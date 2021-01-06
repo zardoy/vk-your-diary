@@ -2,7 +2,7 @@ import React, { ReactChild } from "react";
 
 import { IonBackButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 
-type ComponentProps = {
+type PageOrModalContentProps = {
     noNavbar: true;
 } | {
     noNavbar?: false,
@@ -21,13 +21,10 @@ type ComponentProps = {
     subNavbar?: ReactChild;
 };
 
-/**
- * Simple wrapper around IonHeader
- */
-let Page: React.FC<ComponentProps> = (props) => {
+export let PageOrModalContent: React.FC<PageOrModalContentProps> = (props) => {
     //todo: allow destruct with undefined values
 
-    return <IonPage>
+    return <>
         {
             !props.noNavbar && <IonHeader translucent>
                 <IonToolbar>
@@ -53,6 +50,20 @@ let Page: React.FC<ComponentProps> = (props) => {
             }
             {props.children}
         </IonContent>
+    </>;
+};
+
+type PageProps = PageOrModalContentProps;
+
+/**
+ * Component, that should be used for creating pages in routes in ionic
+ */
+let Page: React.FC<PageProps> = (props) => {
+
+    return <IonPage>
+        <PageOrModalContent {...props}>
+            {props.children}
+        </PageOrModalContent>
     </IonPage>;
 };
 
