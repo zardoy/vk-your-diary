@@ -2,6 +2,7 @@ import React from "react";
 
 import { useFormik } from "formik";
 import { cog, exitOutline, link, paperPlaneOutline, peopleCircle, swapHorizontal } from "ionicons/icons";
+import { useRouteMatch } from "react-router-dom";
 
 import { gql, useApolloClient, useMutation, useQuery, useReactiveVar } from "@apollo/client";
 import {
@@ -19,8 +20,7 @@ import {
     IonNote,
     IonTextarea,
     IonTitle,
-    IonToolbar,
-    useIonRouter
+    IonToolbar
 } from "@ionic/react";
 import { makeStyles } from "@material-ui/styles";
 
@@ -59,7 +59,7 @@ const GET_GROUP_DATA = gql`
 
 let GroupTab: React.FC<ComponentProps> = () => {
     const classes = useStyles();
-    const router = useIonRouter();
+    const routerMatch = useRouteMatch();
 
     const selectedGroupId = useReactiveVar(selectedGroupIdVar);
     const apolloClient = useApolloClient();
@@ -132,7 +132,7 @@ let GroupTab: React.FC<ComponentProps> = () => {
         <IonList lines="full">
             <IonListHeader>Группа</IonListHeader>
             {/* todo use urls */}
-            <IonItem disabled={noDetailedData} routerLink={`${router.routeInfo.pathname}/inviteLink`}>
+            <IonItem disabled={noDetailedData} routerLink={`${routerMatch.path}/inviteLink`}>
                 <IonIcon slot="start" icon={link} />
                 <IonLabel>Пригласительная ссылка</IonLabel>
                 <IonNote>{
@@ -141,7 +141,7 @@ let GroupTab: React.FC<ComponentProps> = () => {
                     )
                 }</IonNote>
             </IonItem>
-            <IonItem disabled={noDetailedData} routerLink={`${router.routeInfo.pathname}/members`}>
+            <IonItem disabled={noDetailedData} routerLink={`${routerMatch.path}/members`}>
                 <IonIcon slot="start" icon={peopleCircle} />
                 <IonLabel>Участники</IonLabel>
                 <IonNote>{
