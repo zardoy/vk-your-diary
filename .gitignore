@@ -14,7 +14,7 @@ node_modules
 # Windows
 debug.log
 
-# temp
+# useful for some quick tests
 /local-playground
 
 # Mac
